@@ -11,7 +11,7 @@ __pycache__/
 .env
 
 # OS files
-.DS_Store
+.DS_Storeadd 
 Thumbs.db
 
 # Streamlit
