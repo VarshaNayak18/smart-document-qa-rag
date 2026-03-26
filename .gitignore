@@ -23,8 +23,5 @@ Thumbs.db
 # VS Code
 .vscode/
 
-# Data files (optional)
-data/*.pdf
-
 # API keys (extra safety)
 *.env
