@@ -1,16 +1,12 @@
-import os
 from dotenv import load_dotenv
-
 load_dotenv()
 
-key = os.getenv("GROQ_API_KEY")
+from src.loader import load_pdf
 
-from langchain_groq import ChatGroq
+# Load PDF
+docs = load_pdf("data/sample.pdf")
 
-llm = ChatGroq(
-    model="llama-3.1-8b-instant",
-    api_key=key
-)
+print("Number of pages:", len(docs))
 
-response = llm.invoke("Explain AI in one line")
-print(response.content)
+print("\nFirst page content:\n")
+print(docs[0].page_content[:500]) 
