@@ -3,14 +3,24 @@ load_dotenv()
 
 from src.loader import load_pdf
 from src.splitter import split_documents
+from src.embeddings import create_vector_store
 
 # Load PDF
 docs = load_pdf("data/sample.pdf")
 
-# Split into chunks
+# Split
 chunks = split_documents(docs)
 
-print("Number of chunks:", len(chunks))
+# Create vector DB
+vectorstore = create_vector_store(chunks)
 
-print("\nFirst chunk:\n")
-print(chunks[0].page_content)
+print("Vector store created successfully!")
+
+# Test search
+query = "What are APIs?"
+results = vectorstore.similarity_search(query, k=2)
+
+print("\nTop results:\n")
+for res in results:
+    print(res.page_content[:300])
+    print("----")
