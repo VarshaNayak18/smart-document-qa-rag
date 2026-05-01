@@ -1,26 +1,40 @@
+import streamlit as st
 from dotenv import load_dotenv
+import os
+
 load_dotenv()
 
 from src.loader import load_pdf
 from src.splitter import split_documents
 from src.embeddings import create_vector_store
+from src.qa_chain import create_qa_chain
 
-# Load PDF
-docs = load_pdf("data/sample.pdf")
+st.set_page_config(page_title="Smart Document Q&A")
 
-# Split
-chunks = split_documents(docs)
+st.title("📄 Smart Document Q&A (RAG)")
+st.write("Upload a PDF and ask questions!")
 
-# Create vector DB
-vectorstore = create_vector_store(chunks)
+# Upload PDF
+uploaded_file = st.file_uploader("Upload your PDF", type="pdf")
 
-print("Vector store created successfully!")
+if uploaded_file:
+    with open("data/temp.pdf", "wb") as f:
+        f.write(uploaded_file.read())
 
-# Test search
-query = "What are APIs?"
-results = vectorstore.similarity_search(query, k=2)
+    st.success("PDF uploaded successfully!")
 
-print("\nTop results:\n")
-for res in results:
-    print(res.page_content[:300])
-    print("----")
+    with st.spinner("Processing document..."):
+        docs = load_pdf("data/temp.pdf")
+        chunks = split_documents(docs)
+        vectorstore = create_vector_store(chunks)
+        qa_chain = create_qa_chain(vectorstore)
+
+    st.success("Ready! Ask your question 👇")
+
+    query = st.text_input("Enter your question:")
+
+    if query:
+        with st.spinner("Thinking..."):
+            response = qa_chain(query)
+            st.write("### 📌 Answer:")
+            st.write(response["result"])
