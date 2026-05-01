@@ -13,7 +13,7 @@ def create_qa_chain(vectorstore):
     retriever = vectorstore.as_retriever()
 
     def qa_function(query):
-        docs = retriever.get_relevant_documents(query)
+        docs = retriever.invoke(query)
         
         context = "\n\n".join([doc.page_content for doc in docs])
 

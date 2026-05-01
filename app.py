@@ -37,4 +37,4 @@ if uploaded_file:
         with st.spinner("Thinking..."):
             response = qa_chain(query)
             st.write("### 📌 Answer:")
-            st.write(response["result"])
+            st.write(response)
