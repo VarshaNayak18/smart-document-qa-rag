@@ -18,13 +18,15 @@ st.write("Upload a PDF and ask questions!")
 uploaded_file = st.file_uploader("Upload your PDF", type="pdf")
 
 if uploaded_file:
-    with open("data/temp.pdf", "wb") as f:
-        f.write(uploaded_file.read())
+    import tempfile
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
+        tmp_file.write(uploaded_file.read())
+        file_path = tmp_file.name
 
     st.success("PDF uploaded successfully!")
 
     with st.spinner("Processing document..."):
-        docs = load_pdf("data/temp.pdf")
+        docs = load_pdf(file_path)
         chunks = split_documents(docs)
         vectorstore = create_vector_store(chunks)
         qa_chain = create_qa_chain(vectorstore)
